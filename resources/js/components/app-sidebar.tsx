@@ -13,9 +13,11 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, List } from 'lucide-react';
 import AppLogo from './app-logo';
+import category from '@/routes/category';
 
+// menu del sidebar
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -23,9 +25,9 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Productos',
-        href: '#',
-        icon: LayoutGrid,
+        title: 'Categorias',
+        href: category.index().url,
+        icon: List,
     },
 ];
 
