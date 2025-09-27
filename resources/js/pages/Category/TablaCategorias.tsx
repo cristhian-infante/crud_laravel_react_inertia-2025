@@ -38,7 +38,7 @@ export default function TablaCategorias({ categories }: TablaCategoriasProps) {
                         </TableCell>
                         <TableCell>{categoria.nameCategory}</TableCell>
                         <TableCell className="text-right">
-                            <ModalEditar />
+                            {/* <ModalEditar /> */}
                             <button className="text-red-600 hover:text-red-900">
                                 Eliminar
                             </button>

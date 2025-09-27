@@ -8,7 +8,7 @@ export default function logoPrueba() {
 Created by potrace 1.15, written by Peter Selinger 2001-2017
 </metadata>
 <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
+fill="#fefefeff" stroke="none">
 <path d="M7580 12501 c-355 -164 -838 -388 -1073 -497 l-429 -199 -261 -537
 -262 -537 -415 -277 c-228 -152 -421 -278 -427 -281 -11 -4 -223 126 -785 481
 -54 33 -99 66 -100 71 -8 27 -510 1004 -521 1012 -23 19 -2109 934 -2115 929

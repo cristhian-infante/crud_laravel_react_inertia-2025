@@ -23,13 +23,15 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
-    },
+    }   
+];
+const Categorias: NavItem[] =[
     {
         title: 'Categorias',
         href: category.index().url,
         icon: List,
-    },
-];
+    }    
+]
 
 
 
@@ -47,11 +49,12 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-
             <SidebarContent>
-                <NavMain items={mainNavItems} />
-            </SidebarContent>
-
+                <NavMain items={mainNavItems} groupLabel="Dashboard" />
+                <NavMain items={Categorias} groupLabel="Categorias" />
+            </SidebarContent>         
+            
+            
             <SidebarFooter>
                 <NavUser />
             </SidebarFooter>
