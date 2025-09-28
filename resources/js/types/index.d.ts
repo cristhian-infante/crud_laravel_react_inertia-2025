@@ -19,7 +19,14 @@ export interface NavItem {
     title: string;
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon | null;
+    items?: NavItem[]; // Para submenús
     isActive?: boolean;
+}
+
+export interface NavSubItem {
+  title: string;
+  href: string;
+  icon?: LucideIcon; // Opcional: iconos para sub-items
 }
 
 export interface SharedData {
