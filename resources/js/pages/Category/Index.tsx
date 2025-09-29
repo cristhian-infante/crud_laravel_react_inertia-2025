@@ -1,10 +1,11 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import category from '@/routes/category';
 import ModalCrear from './ModalCrear';
-import TablaCategorias from './TablaCategorias'; 
 import DataTableCategorias from './DataTableCategorias';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,7 +20,27 @@ interface Category {
     nameCategory: string;
 }
 
-export default function Index({ categories }: { categories: Category[] }) {
+interface PageProps {
+    categories: Category[];
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+}
+
+export default function Index({ categories }: PageProps) {
+    const { flash } = usePage<PageProps>().props;
+
+    // Manejar flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+    }, [flash]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Categorias | Lista" />
@@ -28,11 +49,8 @@ export default function Index({ categories }: { categories: Category[] }) {
                     <h1 className="text-2xl font-bold">Gestión de Categorías</h1>
                     <ModalCrear />
                 </div>
-                {/* {categories.length > 0 && (
-                    <TablaCategorias categories={categories} />
-                )}                
-            </div> */}
-             {categories.length > 0 ? (
+                
+                {categories.length > 0 ? (
                     <DataTableCategorias categories={categories} />
                 ) : (
                     <div className="text-center p-8 border rounded-lg">

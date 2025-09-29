@@ -12,7 +12,7 @@ import {
   Send,
   Settings2,
   SquareTerminal,
-  LayoutGrid, User, Warehouse, List, Plus, MapPin 
+  LayoutGrid, List, Trash2
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -45,7 +45,13 @@ const Categorias: NavItem[] =[
         title: 'Categorias',
         href: category.index().url,
         icon: List,
-    } ]
+    },
+    {
+      title: 'Papelera',
+      href: category.trashed().url,
+      icon: Trash2, // Asegúrate de importar el icono
+    } 
+  ]
 const MenuDesplegable: NavItem[] = [
     {
       title: "Models",

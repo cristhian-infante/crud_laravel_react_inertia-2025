@@ -9,9 +9,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
-import { toast } from 'sonner';
 import rcategory from '@/routes/category';
 
 interface Category {
@@ -28,28 +27,9 @@ interface ModalEditarProps {
 }
 
 export default function ModalEditar({ category, isOpen, onOpenChange, onSuccess }: ModalEditarProps) {
-    const { props } = usePage();
-
     const { data, setData, put, processing, errors, reset } = useForm({
         nameCategory: '',
     });
-
-    // Manejar flash messages - igual que en crear
-    useEffect(() => {
-        const successMessage =
-            props.flash?.success || props.success || props.message;
-
-        const errorMessage =
-            props.flash?.error || props.errors?.nameCategory || props.error;
-
-        if (successMessage) {
-            toast.success(successMessage);
-        }
-
-        if (errorMessage) {
-            toast.error(errorMessage);
-        }
-    }, [props.flash, props.success, props.error, props.errors]);
 
     // Cargar datos cuando se abre el modal o cambia la categoría
     useEffect(() => {
@@ -67,23 +47,21 @@ export default function ModalEditar({ category, isOpen, onOpenChange, onSuccess 
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        // console.log('ID de categoría a editar:', category.id);
-        //  console.log('URL de actualización:', rcategory.update('category.update', category.id).url);
-        // USANDO LA MISMA ESTRUCTURA QUE EL MODAL CREAR
+        
         put(rcategory.update(category.id).url, {
+            preserveScroll: true,
+            preserveState: false, // IMPORTANTE: Evita conflictos
             onSuccess: () => {
                 reset();
                 onOpenChange(false);
                 if (onSuccess) {
                     onSuccess();
                 }
-                // El toast se manejará automáticamente con el flash message
+                // NO mostrar toast aquí - se manejará en la página principal
             },
-            onError: (errors) => {
-                // Mostrar errores inmediatos
-                if (errors.nameCategory) {
-                    toast.error(errors.nameCategory);
-                }
+            onError: () => {
+                // Los errores se mostrarán automáticamente en los campos
+                // NO mostrar toast aquí para evitar duplicados
             },
         });
     };
@@ -118,6 +96,7 @@ export default function ModalEditar({ category, isOpen, onOpenChange, onSuccess 
                                 required
                                 placeholder="Ingrese el nombre de la categoría"
                                 disabled={processing}
+                                className={errors.nameCategory ? 'border-red-500' : ''}
                             />
                             {errors.nameCategory && (
                                 <p className="text-sm text-red-600">

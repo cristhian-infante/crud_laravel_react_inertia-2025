@@ -12,36 +12,15 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import category from '@/routes/category';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
 export default function ModalCrear() {
     const [open, setOpen] = useState(false);
-    const { props } = usePage();
-
     
     const { data, setData, post, processing, errors, reset } = useForm({
         nameCategory: '',
     });
-
-    // Manejar flash messages - versión segura
-    useEffect(() => {
-        // Diferentes formas en que Inertia puede pasar flash messages
-        const successMessage =
-            props.flash?.success || props.success || props.message;
-
-        const errorMessage =
-            props.flash?.error || props.errors?.nameCategory || props.error;
-
-        if (successMessage) {
-            toast.success(successMessage);
-        }
-
-        if (errorMessage) {
-            toast.error(errorMessage);
-        }
-    }, [props.flash, props.success, props.error, props.errors]); // Todas las dependencias posibles
 
     // Limpiar formulario cuando se cierra el modal
     useEffect(() => {
@@ -50,20 +29,20 @@ export default function ModalCrear() {
         }
     }, [open, reset]);
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post(category.store().url, {
+            preserveScroll: true,
+            preserveState: false, // IMPORTANTE: Evita conflictos
             onSuccess: () => {
                 reset();
                 setOpen(false);
-                // El toast se manejará automáticamente con el flash message
+                // NO mostrar toast aquí - se manejará en la página principal
             },
-            onError: (errors) => {
-                // Mostrar errores inmediatos
-                if (errors.nameCategory) {
-                    toast.error(errors.nameCategory);
-                }
+            onError: () => {
+                // Los errores se mostrarán automáticamente en los campos
+                // NO mostrar toast aquí para evitar duplicados
             },
         });
     };
@@ -101,6 +80,7 @@ export default function ModalCrear() {
                                 }
                                 required
                                 placeholder="Ingrese el nombre de la categoría"
+                                className={errors.nameCategory ? 'border-red-500' : ''}
                             />
                             {errors.nameCategory && (
                                 <p className="text-sm text-red-600">
@@ -116,6 +96,7 @@ export default function ModalCrear() {
                                 variant="outline"
                                 type="button"
                                 onClick={handleCancel}
+                                disabled={processing}
                             >
                                 Cancelar
                             </Button>
