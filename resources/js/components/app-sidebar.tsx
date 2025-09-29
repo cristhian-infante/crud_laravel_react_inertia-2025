@@ -35,7 +35,7 @@ import category from '@/routes/category';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Panel de control',
         href: dashboard().url,
         icon: LayoutGrid,
     }   

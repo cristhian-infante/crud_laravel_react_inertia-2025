@@ -20,9 +20,7 @@ export default function ModalCrear() {
     const [open, setOpen] = useState(false);
     const { props } = usePage();
 
-    // Debug: ver qué props están disponibles
-    console.log('Props disponibles:', props);
-
+    
     const { data, setData, post, processing, errors, reset } = useForm({
         nameCategory: '',
     });

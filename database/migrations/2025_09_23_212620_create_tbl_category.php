@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_category', function (Blueprint $table) {
+       Schema::create('tbl_category', function (Blueprint $table) {
             $table->id();
+            $table->string('codCategory')->unique();
             $table->string('nameCategory');
+            $table->boolean('status')->default(true)->comment('0: Inactivo, 1: Activo');
+            $table->softDeletes();
             $table->timestamps();
+            
+            // Índices para mejor rendimiento
+            $table->index('status');
+            $table->index('codCategory');
         });
     }
 

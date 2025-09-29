@@ -15,6 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Category {
     id: number;
+    codCategory: string;
     nameCategory: string;
 }
 

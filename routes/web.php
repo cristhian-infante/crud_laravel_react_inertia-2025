@@ -16,6 +16,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //nuestras rutas
 Route::get('/category',[CategoryController::class, 'index'])->name('category.index');//listaremos las categorias
 Route::post('/category/store', [CategoryController::class, 'store'])->name('category.store'); // registramos una nueva categoria
+Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('category.update');//editamos la categoria
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
