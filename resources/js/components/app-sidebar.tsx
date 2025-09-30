@@ -2,17 +2,9 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
-  LayoutGrid, List, Trash2
+  Bot, LayoutGrid, List, Trash2, Package,
+  ChartColumnStacked
+
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -31,6 +23,7 @@ import { dashboard } from '@/routes';
 import AppLogo from './app-logo';
 import { type NavItem } from '@/types';
 import category from '@/routes/category';
+import product from "@/routes/product"
 //Menú
 
 const mainNavItems: NavItem[] = [
@@ -44,7 +37,12 @@ const Categorias: NavItem[] =[
     {
         title: 'Categorias',
         href: category.index().url,
-        icon: List,
+        icon: ChartColumnStacked,
+    },
+    {
+        title: 'Productos',
+        href: product.index().url,
+        icon: Package,
     },
     {
       title: 'Papelera',
