@@ -19,7 +19,7 @@ export default function ModalCrear() {
     const [open, setOpen] = useState(false);
     
     const { data, setData, post, processing, errors, reset } = useForm({
-        nameCategory: '',
+        name: '',
     });
 
     // Limpiar formulario cuando se cierra el modal
@@ -72,19 +72,19 @@ export default function ModalCrear() {
                             <Label htmlFor="nameCategory">Nombre</Label>
                             <Input
                                 id="nameCategory"
-                                name="nameCategory"
+                                name="name"
                                 type="text"
-                                value={data.nameCategory}
+                                value={data.name}
                                 onChange={(e) =>
-                                    setData('nameCategory', e.target.value)
+                                    setData('name', e.target.value)
                                 }
                                 required
                                 placeholder="Ingrese el nombre de la categoría"
-                                className={errors.nameCategory ? 'border-red-500' : ''}
+                                className={errors.name ? 'border-red-500' : ''}
                             />
-                            {errors.nameCategory && (
+                            {errors.name && (
                                 <p className="text-sm text-red-600">
-                                    {errors.nameCategory}
+                                    {errors.name}
                                 </p>
                             )}
                         </div>

@@ -14,16 +14,16 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nameCategory' => 'required|string|max:255|unique:tbl_category,nameCategory'
+            'name' => 'required|string|max:255|unique:categories,name'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'nameCategory.required' => 'El nombre de la categoría es obligatorio',
-            'nameCategory.unique' => 'El nombre de la categoría ya existe',
-            'nameCategory.max' => 'El nombre no puede exceder los 255 caracteres'
+            'name.required' => 'El nombre de la categoría es obligatorio',
+            'name.unique' => 'El nombre de la categoría ya existe',
+            'name.max' => 'El nombre no puede exceder los 255 caracteres'
         ];
     }
 }

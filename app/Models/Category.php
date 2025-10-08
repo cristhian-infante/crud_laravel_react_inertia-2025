@@ -13,11 +13,11 @@ class Category extends Model
     use HasFactory, SoftDeletes;
 
     //nombre de la tabla
-    protected $table = 'tbl_category';
+    protected $table = 'categories';
     //campos de la tabla
     protected $fillable = [
-        'codCategory',
-        'nameCategory',
+        'code',
+        'name', 
         'status'
     ];
 

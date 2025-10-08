@@ -9,15 +9,16 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Categorias',
+        title: 'Categorías',
         href: category.index().url,
     },
 ];
 
 interface Category {
     id: number;
-    codCategory: string;
-    nameCategory: string;
+    code: string;
+    name: string;
+    status: string;
 }
 
 interface PageProps {

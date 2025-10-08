@@ -55,8 +55,9 @@ import ModalEditar from "./ModalEditar"
 
 interface Category {
   id: number
-  codCategory: string
-  nameCategory: string
+  code: string
+  name: string
+  status: string
 }
 
 interface DataTableCategoriasProps {
@@ -209,7 +210,7 @@ const ActionsCell = ({ row, onDelete }: ActionsCellProps) => {
                 <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Esta acción no se puede deshacer. Esto eliminará permanentemente
-                  la categoría "{category.nameCategory}" y todos sus datos asociados.
+                  la categoría "{category.name}" y todos sus datos asociados.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -266,8 +267,8 @@ const MobileCategoryCard = ({
     <div className="border rounded-lg p-4 space-y-3 bg-card">
       <div className="flex justify-between items-start">
         <div className="space-y-1 flex-1">
-          <h3 className="font-semibold text-base">{category.nameCategory}</h3>
-          <p className="text-sm text-muted-foreground">Código: {category.codCategory}</p>
+          <h3 className="font-semibold text-base">{category.name}</h3>
+          <p className="text-sm text-muted-foreground">Código: {category.code}</p>
         </div>
         <div className="flex gap-1 ml-2">
           <Button
@@ -295,7 +296,7 @@ const MobileCategoryCard = ({
               <AlertDialogHeader>
                 <AlertDialogTitle>¿Eliminar categoría?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Esta acción moverá la categoría "{category.nameCategory}" a la papelera.
+                  Esta acción moverá la categoría "{category.name}" a la papelera.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -448,7 +449,7 @@ export default function DataTableCategorias({ categories, onCategoryChange }: Da
       enableHiding: false,
     },
     {
-      accessorKey: "codCategory",
+      accessorKey: "code",
       header: ({ column }) => {
         return (
           <Button
@@ -460,10 +461,10 @@ export default function DataTableCategorias({ categories, onCategoryChange }: Da
           </Button>
         )
       },
-      cell: ({ row }) => <div className="font-medium">{row.getValue("codCategory")}</div>,
+      cell: ({ row }) => <div className="font-medium">{row.getValue("code")}</div>,
     },
     {
-      accessorKey: "nameCategory",
+      accessorKey: "name",
       header: ({ column }) => {
         return (
           <Button
@@ -475,7 +476,7 @@ export default function DataTableCategorias({ categories, onCategoryChange }: Da
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue("nameCategory")}</div>,
+      cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
       id: "actions",
@@ -529,9 +530,9 @@ export default function DataTableCategorias({ categories, onCategoryChange }: Da
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Input
             placeholder="Filtrar por nombre..."
-            value={(table.getColumn("nameCategory")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("nameCategory")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
             disabled={isLoading}
@@ -539,9 +540,9 @@ export default function DataTableCategorias({ categories, onCategoryChange }: Da
           
           <Input
             placeholder="Filtrar por código..."
-            value={(table.getColumn("codCategory")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("codCategory")?.setFilterValue(event.target.value)
+              table.getColumn("code")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
             disabled={isLoading}
@@ -569,8 +570,8 @@ export default function DataTableCategorias({ categories, onCategoryChange }: Da
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id === "nameCategory" ? "Nombre" : 
-                     column.id === "codCategory" ? "Código" : column.id}
+                    {column.id === "name" ? "Nombre" : 
+                     column.id === "code" ? "Código" : column.id}
                   </DropdownMenuCheckboxItem>
                 )
               })}

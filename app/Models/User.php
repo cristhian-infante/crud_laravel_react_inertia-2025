@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'branch_id'
     ];
 
     /**
@@ -45,5 +46,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relación con sucursal
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    // Scope para usuarios de una sucursal específica
+    public function scopeFromBranch($query, $branchId)
+    {
+        return $query->where('branch_id', $branchId);
     }
 }

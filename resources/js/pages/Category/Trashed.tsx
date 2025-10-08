@@ -52,8 +52,8 @@ import {
 
 interface Category {
   id: number
-  codCategory: string
-  nameCategory: string
+  code: string
+  name: string
   deleted_at: string
 }
 
@@ -280,8 +280,8 @@ const MobileCategoryCard = ({
     <div className="border rounded-lg p-4 space-y-3 bg-card">
       <div className="flex justify-between items-start">
         <div className="space-y-1 flex-1">
-          <h3 className="font-semibold text-base">{category.nameCategory}</h3>
-          <p className="text-sm text-muted-foreground">Código: {category.codCategory}</p>
+          <h3 className="font-semibold text-base">{category.name}</h3>
+          <p className="text-sm text-muted-foreground">Código: {category.code}</p>
           <p className="text-xs text-muted-foreground">
             Eliminada: {new Date(category.deleted_at).toLocaleDateString('es-ES', {
               day: 'numeric',
@@ -317,7 +317,7 @@ const MobileCategoryCard = ({
                 <AlertDialogTitle>¿Eliminar permanentemente?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Esta acción no se puede deshacer. Se eliminará permanentemente
-                  la categoría "{category.nameCategory}".
+                  la categoría "{category.name}".
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -472,7 +472,7 @@ export default function Trashed({ categories }: { categories: Category[] }) {
       enableHiding: false,
     },
     {
-      accessorKey: "codCategory",
+      accessorKey: "code",
       header: ({ column }) => {
         return (
           <Button
@@ -484,10 +484,10 @@ export default function Trashed({ categories }: { categories: Category[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div className="font-medium">{row.getValue("codCategory")}</div>,
+      cell: ({ row }) => <div className="font-medium">{row.getValue("code")}</div>,
     },
     {
-      accessorKey: "nameCategory",
+      accessorKey: "name",
       header: ({ column }) => {
         return (
           <Button
@@ -499,7 +499,7 @@ export default function Trashed({ categories }: { categories: Category[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue("nameCategory")}</div>,
+      cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
       accessorKey: "deleted_at",
@@ -586,9 +586,9 @@ export default function Trashed({ categories }: { categories: Category[] }) {
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <Input
                   placeholder="Filtrar por nombre..."
-                  value={(table.getColumn("nameCategory")?.getFilterValue() as string) ?? ""}
+                  value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                   onChange={(event) =>
-                    table.getColumn("nameCategory")?.setFilterValue(event.target.value)
+                    table.getColumn("name")?.setFilterValue(event.target.value)
                   }
                   className="max-w-sm"
                   disabled={isLoading}
@@ -596,9 +596,9 @@ export default function Trashed({ categories }: { categories: Category[] }) {
                 
                 <Input
                   placeholder="Filtrar por código..."
-                  value={(table.getColumn("codCategory")?.getFilterValue() as string) ?? ""}
+                  value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
                   onChange={(event) =>
-                    table.getColumn("codCategory")?.setFilterValue(event.target.value)
+                    table.getColumn("code")?.setFilterValue(event.target.value)
                   }
                   className="max-w-sm"
                   disabled={isLoading}
@@ -625,8 +625,8 @@ export default function Trashed({ categories }: { categories: Category[] }) {
                             column.toggleVisibility(!!value)
                           }
                         >
-                          {column.id === "nameCategory" ? "Nombre" : 
-                           column.id === "codCategory" ? "Código" : 
+                          {column.id === "name" ? "Nombre" : 
+                           column.id === "code" ? "Código" : 
                            column.id === "deleted_at" ? "Fecha Eliminación" : column.id}
                         </DropdownMenuCheckboxItem>
                       )

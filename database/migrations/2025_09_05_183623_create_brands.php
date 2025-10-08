@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Category;
 
 return new class extends Migration
 {
@@ -12,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_products', function (Blueprint $table) {
-            $table->id();   
-            $table->foreignId('category_id')->constrained('tbl_category');      
-            $table->string('nombre');
-            $table->string('stock');
-            $table->decimal('precio',10,2);
+        Schema::create('brands', function (Blueprint $table) {
+            //Marcas
+            $table->id();
+            $table->string('name');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_products');
+        Schema::dropIfExists('brands');
     }
 };

@@ -15,8 +15,8 @@ import rcategory from '@/routes/category';
 
 interface Category {
     id: number;
-    codCategory: string;
-    nameCategory: string;
+    code: string;
+    name: string;
 }
 
 interface ModalEditarProps {
@@ -28,13 +28,13 @@ interface ModalEditarProps {
 
 export default function ModalEditar({ category, isOpen, onOpenChange, onSuccess }: ModalEditarProps) {
     const { data, setData, put, processing, errors, reset } = useForm({
-        nameCategory: '',
+        name: '',
     });
 
     // Cargar datos cuando se abre el modal o cambia la categoría
     useEffect(() => {
         if (category && isOpen) {
-            setData('nameCategory', category.nameCategory);
+            setData('name', category.name);
         }
     }, [category, isOpen]);
 
@@ -77,7 +77,7 @@ export default function ModalEditar({ category, isOpen, onOpenChange, onSuccess 
                 <DialogHeader>
                     <DialogTitle>Editando Categoría</DialogTitle>
                     <DialogDescription>
-                        Modifique el nombre de la categoría {category.codCategory}.
+                        Modifique el nombre de la categoría {category.code}.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -89,18 +89,18 @@ export default function ModalEditar({ category, isOpen, onOpenChange, onSuccess 
                                 id="nameCategory"
                                 name="nameCategory"
                                 type="text"
-                                value={data.nameCategory}
+                                value={data.name}
                                 onChange={(e) =>
-                                    setData('nameCategory', e.target.value)
+                                    setData('name', e.target.value)
                                 }
                                 required
                                 placeholder="Ingrese el nombre de la categoría"
                                 disabled={processing}
-                                className={errors.nameCategory ? 'border-red-500' : ''}
+                                className={errors.name ? 'border-red-500' : ''}
                             />
-                            {errors.nameCategory && (
+                            {errors.name && (
                                 <p className="text-sm text-red-600">
-                                    {errors.nameCategory}
+                                    {errors.name}
                                 </p>
                             )}
                         </div>

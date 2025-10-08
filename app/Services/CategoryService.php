@@ -25,19 +25,19 @@ class CategoryService
             ->orderBy('id', 'desc')
             ->first();
 
-        if ($lastCategory) {
+        if ($lastCategory && $lastCategory->code) {
             // Extraer el número del último código
-            $lastNumber = intval(substr($lastCategory->codCategory, 4));
+            $lastNumber = intval(substr($lastCategory->code, 4)); // Usar 'code' en lugar de 'codCategory'
             $nextNumber = $lastNumber + 1;
         } else {
             $nextNumber = 1;
         }
 
-        $codCategory = 'CAT-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $categoryCode = 'CAT-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
         // Verificar que el código no exista (por si acaso)
         $existingCategory = Category::withTrashed()
-            ->where('codCategory', $codCategory)
+            ->where('code', $categoryCode)
             ->first();
 
         if ($existingCategory) {
@@ -48,8 +48,10 @@ class CategoryService
             
             $usedNumbers = [];
             foreach ($allCategories as $cat) {
-                $num = intval(substr($cat->codCategory, 4));
-                $usedNumbers[] = $num;
+                if ($cat->code) {
+                    $num = intval(substr($cat->code, 4)); // Usar 'code' aquí también
+                    $usedNumbers[] = $num;
+                }
             }
             
             $nextAvailable = 1;
@@ -57,15 +59,15 @@ class CategoryService
                 $nextAvailable++;
             }
             
-            $codCategory = 'CAT-' . str_pad($nextAvailable, 3, '0', STR_PAD_LEFT);
+            $categoryCode = 'CAT-' . str_pad($nextAvailable, 3, '0', STR_PAD_LEFT);
         }
 
-        return $codCategory;
+        return $categoryCode;
     }
 
     public function createCategory(array $data): Category
     {
-        $data['codCategory'] = $this->generateCategoryCode();
+        $data['code'] = $this->generateCategoryCode();
         
         return Category::create($data);
     }

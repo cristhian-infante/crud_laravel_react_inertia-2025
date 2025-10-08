@@ -16,16 +16,16 @@ class UpdateCategoryRequest extends FormRequest
         $categoryId = $this->route('category');
 
         return [
-            'nameCategory' => 'required|string|max:255|unique:tbl_category,nameCategory,' . $categoryId
+            'name' => 'required|string|max:255|unique:categories,name,' . $categoryId
         ];
     }
 
     public function messages(): array
     {
         return [
-            'nameCategory.required' => 'El nombre de la categoría es obligatorio',
-            'nameCategory.unique' => 'El nombre de la categoría ya existe',
-            'nameCategory.max' => 'El nombre no puede exceder los 255 caracteres'
+            'name.required' => 'El nombre de la categoría es obligatorio',
+            'name.unique' => 'El nombre de la categoría ya existe',
+            'name.max' => 'El nombre no puede exceder los 255 caracteres'
         ];
     }
 }

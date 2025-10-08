@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('tbl_category', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
+            //Proveedores
             $table->id();
-            $table->string('codCategory')->unique();
-            $table->string('nameCategory');
-            $table->boolean('status')->default(true)->comment('0: Inactivo, 1: Activo');
+            $table->string('name');
+            $table->string('contact_email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();
-            
-            // Índices para mejor rendimiento
-            $table->index('status');
-            $table->index('codCategory');
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_category');
+        Schema::dropIfExists('suppliers');
     }
 };
