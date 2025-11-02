@@ -13,7 +13,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, Link, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -35,7 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { SheetProductEdit } from "./SheetProductEdit"
-import { router } from '@inertiajs/react';
+import { router } from '@inertiajs/react'
 import {
   Select,
   SelectContent,
@@ -80,6 +80,10 @@ export interface Product {
 interface Branch {
     id: number;
     name: string;
+    code: string;
+    total_products: number;
+    products_with_stock: number;
+    display_text: string; 
 }
 
 interface User {
@@ -100,26 +104,24 @@ interface DataTableProductsProps {
 // =============================================================================
 
 function MobileProductView({ table, onEdit }: { table: any; onEdit: (product: Product) => void }) {
-  const handleViewDetails = (sku:string)=>{
-    router.visit(`/product/${sku}`);
+  const handleViewDetails = (sku: string) => {
+    router.visit(`/product/${sku}`)
   }
+  
   return (    
       <div className="space-y-3 md:hidden">
           {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row: any) => (
-                
                   <div
                       key={row.id}
                       className="space-y-3 rounded-lg border bg-card p-4 text-card-foreground shadow-sm"
                   >
-                      {/*  CONTENEDOR PRINCIPAL REORGANIZADO */}
+                      {/* CONTENEDOR PRINCIPAL REORGANIZADO */}
                       <div className="flex items-start gap-3">
                           {/* Checkbox de selección */}
                           <Checkbox
                               checked={row.getIsSelected()}
-                              onCheckedChange={(value) =>
-                                  row.toggleSelected(!!value)
-                              }
+                              onCheckedChange={(value) => row.toggleSelected(!!value)}
                               aria-label="Select row"
                           />
                           
@@ -163,7 +165,7 @@ function MobileProductView({ table, onEdit }: { table: any; onEdit: (product: Pr
                           </DropdownMenu>
                       </div>
                       
-                      <DropdownMenuSeparator />
+                      <div className="border-t border-gray-200 my-2" />
                       
                       {/* Header con nombre y categoría */}
                       <div className="text-left">
@@ -234,7 +236,7 @@ function MobileProductView({ table, onEdit }: { table: any; onEdit: (product: Pr
               </div>
           )}
       </div>
-  );
+  )
 }
 
 // =============================================================================
@@ -298,10 +300,10 @@ function DesktopProductView({ table, onEdit }: { table: any; onEdit: (product: P
 // =============================================================================
 
 export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Product>[] => [
-  //checkbox - id
+  // Checkbox - id
   {
     id: "select",
-    header: ({table}) =>(
+    header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
@@ -321,7 +323,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
     enableSorting: false,
     enableHiding: false,
   },
-  //SKU
+  // SKU
   {
     accessorKey: "sku",
     header: ({ column }) => {
@@ -337,7 +339,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
     },
     cell: ({ row }) => <div className="font-mono">{row.getValue("sku")}</div>,
   },
-  //Nombre Producto
+  // Nombre Producto
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -353,7 +355,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
     },
     cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
-  //Marca
+  // Marca
   {
     accessorKey: "brand_name",
     header: ({ column }) => {
@@ -369,7 +371,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
     },
     cell: ({ row }) => <div>{row.getValue("brand_name")}</div>,
   },
-  //Categoría
+  // Categoría
   {
     accessorKey: "category_name",
     header: ({ column }) => {
@@ -389,7 +391,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
       </div>
     ),
   },
-  //Sucursal
+  // Sucursal
   {
     accessorKey: "branch_name",
     header: ({ column }) => {
@@ -409,7 +411,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
       </div>
     ),
   },
-  //Ubicación
+  // Ubicación
   {
     accessorKey: "ubicacion",
     header: ({ column }) => {
@@ -425,7 +427,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
     },
     cell: ({ row }) => <div className="text-sm">{row.getValue("ubicacion") || "N/A"}</div>,
   },
-  //Stock
+  // Stock
   {
     accessorKey: "stock_total",
     header: ({ column }) => {
@@ -440,10 +442,10 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
       )
     },
     cell: ({ row }) => {
-      const stock = Number(row.getValue("stock_total"));
-      const stockMin = row.original.stock_min || 0;
-      const isLowStock = stock <= stockMin;
-      const isOutOfStock = stock === 0;
+      const stock = Number(row.getValue("stock_total"))
+      const stockMin = row.original.stock_min || 0
+      const isLowStock = stock <= stockMin
+      const isOutOfStock = stock === 0
       
       return (
         <div className={`font-semibold ${
@@ -454,10 +456,10 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
           {isLowStock && !isOutOfStock && <span className="text-xs text-red-500 block">Stock bajo</span>}
           {isOutOfStock && <span className="text-xs text-red-700 block">Sin stock</span>}
         </div>
-      );
+      )
     },
   },
-  //Stock Mínimo
+  // Stock Mínimo
   {
     accessorKey: "stock_min",
     header: ({ column }) => {
@@ -473,7 +475,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
     },
     cell: ({ row }) => <div>{Number(row.getValue("stock_min")).toLocaleString()}</div>,
   },
-  //Precio
+  // Precio
   {
     accessorKey: "price",
     header: ({ column }) => {
@@ -496,7 +498,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
       </div>
     ),
   },
-  //Costo
+  // Costo
   {
     accessorKey: "cost",
     header: ({ column }) => {
@@ -511,7 +513,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
       )
     },
     cell: ({ row }) => {
-      const costo = row.getValue("cost");
+      const costo = row.getValue("cost")
       return (
         <div className="text-orange-600">
           {costo ? `S/. ${Number(costo).toLocaleString('es-PE', {
@@ -519,82 +521,82 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
             maximumFractionDigits: 2
           })}` : "N/A"}
         </div>
-      );
+      )
     },
   },
-  //Estado
-{
-  accessorKey: "status",
-  header: ({ column }) => {
-    return (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Estado
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    )
-  },
-  cell: ({ row }) => {
-    const status = row.getValue("status");
-    
-    // ✅ Función segura para obtener estilos
-    const getStatusStyles = (status: any) => {
-      const statusStr = String(status).toLowerCase();
+  // Estado
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Estado
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const status = row.getValue("status")
       
-      switch (statusStr) {
-        case 'active':
-        case 'activo':
-        case '1':
-        case 'true':
-          return 'bg-green-100 text-green-800 border-green-200';
-        case 'inactive':
-        case 'inactivo':
-        case '0':
-        case 'false':
-          return 'bg-gray-100 text-gray-800 border-gray-200';
-        case 'discontinued':
-        case 'descontinuado':
-          return 'bg-red-100 text-red-800 border-red-200';
-        default:
-          return 'bg-blue-100 text-blue-800 border-blue-200';
+      // Función segura para obtener estilos
+      const getStatusStyles = (status: any) => {
+        const statusStr = String(status).toLowerCase()
+        
+        switch (statusStr) {
+          case 'active':
+          case 'activo':
+          case '1':
+          case 'true':
+            return 'bg-green-100 text-green-800 border-green-200'
+          case 'inactive':
+          case 'inactivo':
+          case '0':
+          case 'false':
+            return 'bg-gray-100 text-gray-800 border-gray-200'
+          case 'discontinued':
+          case 'descontinuado':
+            return 'bg-red-100 text-red-800 border-red-200'
+          default:
+            return 'bg-blue-100 text-blue-800 border-blue-200'
+        }
       }
-    };
-    
-    // ✅ Función segura para obtener texto
-    const getStatusText = (status: any) => {
-      if (status === null || status === undefined) return 'Desconocido';
       
-      const statusStr = String(status).toLowerCase();
-      
-      switch (statusStr) {
-        case 'active':
-        case 'activo':
-        case '1':
-        case 'true':
-          return 'Activo';
-        case 'inactive':
-        case 'inactivo':
-        case '0':
-        case 'false':
-          return 'Inactivo';
-        case 'discontinued':
-        case 'descontinuado':
-          return 'Descontinuado';
-        default:
-          return String(status).charAt(0).toUpperCase() + String(status).slice(1);
+      // Función segura para obtener texto
+      const getStatusText = (status: any) => {
+        if (status === null || status === undefined) return 'Desconocido'
+        
+        const statusStr = String(status).toLowerCase()
+        
+        switch (statusStr) {
+          case 'active':
+          case 'activo':
+          case '1':
+          case 'true':
+            return 'Activo'
+          case 'inactive':
+          case 'inactivo':
+          case '0':
+          case 'false':
+            return 'Inactivo'
+          case 'discontinued':
+          case 'descontinuado':
+            return 'Descontinuado'
+          default:
+            return String(status).charAt(0).toUpperCase() + String(status).slice(1)
+        }
       }
-    };
-    
-    return (
-      <div className={`rounded-full border px-2 py-1 text-xs font-medium ${getStatusStyles(status)}`}>
-        {getStatusText(status)}
-      </div>
-    );
+      
+      return (
+        <div className={`rounded-full border px-2 py-1 text-xs font-medium ${getStatusStyles(status)}`}>
+          {getStatusText(status)}
+        </div>
+      )
+    },
   },
-},
-  //Acciones
+  // Acciones
   {
     id: "actions",
     enableHiding: false,
@@ -602,8 +604,8 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
       const product = row.original
 
       const handleViewDetails = () => {
-            router.visit(`/product/${product.sku}`);
-        };
+        router.visit(`/product/${product.sku}`)
+      }
 
       return (
         <DropdownMenu>
@@ -617,7 +619,7 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleViewDetails}>
-                        Detalles
+              Detalles
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEdit(product)}>Editar</DropdownMenuItem>
             <DropdownMenuItem className="text-destructive focus:text-destructive">
@@ -634,100 +636,139 @@ export const getColumns = (onEdit: (product: Product) => void): ColumnDef<Produc
 // COMPONENTE PRINCIPAL
 // =============================================================================
 
-export default function DataTableProductos({ products, branchs, user, onProductChange }: DataTableProductsProps){
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
-    const [isMobile, setIsMobile] = React.useState(false);
-    const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
-    const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+export default function DataTableProductos({ products, branchs, user, onProductChange }: DataTableProductsProps) {
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
+    const [isMobile, setIsMobile] = React.useState(false)
+    const [editingProduct, setEditingProduct] = React.useState<Product | null>(null)
+    const [isSheetOpen, setIsSheetOpen] = React.useState(false)
     
-    // ✅ Estado para la sucursal seleccionada
+    // Estado para la sucursal seleccionada
     const [selectedBranch, setSelectedBranch] = React.useState<number>(() => {
         if (user?.branch_id && branchs?.length > 0) {
-            return user.branch_id;
+            return user.branch_id
         }
         if (branchs?.length > 0) {
-            return branchs[0].id;
+            return branchs[0].id
         }
-        return 0;
-    });
+        return 0
+    })
 
-    // ✅ Filtrar productos por sucursal (basado en branch_name)
+    // Filtrar productos por sucursal (basado en branch_name)
     const filteredProducts = React.useMemo(() => {
-        if (!products) return [];
+        if (!products || !products.length) return [];
         
+        console.log('🔄 Filtrando productos...', {
+            selectedBranch,
+            totalProducts: products.length,
+            branchNames: [...new Set(products.map(p => p.branch_name).filter(Boolean))]
+        });
+
+        // Si selectedBranch es 0, mostrar todos los productos
         if (selectedBranch === 0) {
-            return products; // Mostrar todos los productos
+            return products;
         }
         
+        // Encontrar la sucursal seleccionada
         const selectedBranchData = branchs?.find(branch => branch.id === selectedBranch);
-        if (!selectedBranchData) return products;
+        if (!selectedBranchData) {
+            console.warn('❌ No se encontró la sucursal seleccionada:', selectedBranch);
+            return products;
+        }
         
-        return products.filter(product => product.branch_name === selectedBranchData.name);
+        console.log('🎯 Filtrando por sucursal:', selectedBranchData.name);
+        
+        // Filtrar productos - con manejo de casos edge
+        const filtered = products.filter(product => {
+            if (!product.branch_name) {
+                console.log('⚠️ Producto sin branch_name:', product.sku);
+                return false;
+            }
+            
+            // Comparación normalizada
+            const productBranch = product.branch_name.trim();
+            const targetBranch = selectedBranchData.name.trim();
+            
+            const matches = productBranch === targetBranch;
+            
+            if (matches) {
+                console.log('✅ Producto coincide:', product.sku, '->', productBranch);
+            }
+            
+            return matches;
+        });
+        
+        console.log('📊 Resultado del filtrado:', {
+            encontrados: filtered.length,
+            productos: filtered.map(p => p.sku)
+        });
+        
+        return filtered;
     }, [products, selectedBranch, branchs]);
+
 
     // Detectar si es móvil
     React.useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
 
     const handleEdit = (product: Product) => {
-        setEditingProduct(product);
-        setIsSheetOpen(true);
-    };
+        setEditingProduct(product)
+        setIsSheetOpen(true)
+    }
 
     const handleSaveProduct = (updatedProduct: Product) => {
         const updatedProducts = products.map(p => 
             p.id === updatedProduct.id ? updatedProduct : p
-        );
+        )
         
         if (onProductChange) {
-            onProductChange(updatedProducts);
+            onProductChange(updatedProducts)
         }
         
-        setIsSheetOpen(false);
-        setEditingProduct(null);
-    };
+        setIsSheetOpen(false)
+        setEditingProduct(null)
+    }
 
     const handleBranchChange = (branchId: string) => {
-        const branchIdNumber = Number(branchId);
-        setSelectedBranch(branchIdNumber);
-    };
+        const branchIdNumber = Number(branchId)
+        setSelectedBranch(branchIdNumber)
+    }
 
     // Encontrar la sucursal actual del usuario
-    const currentUserBranch = branchs?.find(branch => branch.id === selectedBranch);
+    const currentUserBranch = branchs?.find(branch => branch.id === selectedBranch)
 
     // Contador de productos TOTALES por sucursal (sin filtros de búsqueda)
     const getTotalProductCountByBranch = (branchId: number) => {
-        if (!products) return 0;
-        if (branchId === 0) return products.length;
+        if (!products) return 0
+        if (branchId === 0) return products.length
         
-        const branchData = branchs?.find(branch => branch.id === branchId);
-        if (!branchData) return 0;
+        const branchData = branchs?.find(branch => branch.id === branchId)
+        if (!branchData) return 0
         
-        return products.filter(product => product.branch_name === branchData.name).length;
-    };
+        return products.filter(product => product.branch_name === branchData.name).length
+    }
 
     // Contador de productos FILTRADOS por búsqueda por sucursal
     const getFilteredProductCountByBranch = (branchId: number) => {
-        if (!products) return 0;
+        if (!products) return 0
         
         // Obtener los filtros actuales de búsqueda
-        const skuFilter = table.getColumn('sku')?.getFilterValue() as string || '';
-        const nameFilter = table.getColumn('name')?.getFilterValue() as string || '';
+        const skuFilter = table?.getColumn('sku')?.getFilterValue() as string || ''
+        const nameFilter = table?.getColumn('name')?.getFilterValue() as string || ''
         
-        let filtered = products;
+        let filtered = products
         
         // Aplicar filtro de sucursal
         if (branchId !== 0) {
-            const branchData = branchs?.find(branch => branch.id === branchId);
+            const branchData = branchs?.find(branch => branch.id === branchId)
             if (branchData) {
-                filtered = filtered.filter(product => product.branch_name === branchData.name);
+                filtered = filtered.filter(product => product.branch_name === branchData.name)
             }
         }
         
@@ -735,21 +776,23 @@ export default function DataTableProductos({ products, branchs, user, onProductC
         if (skuFilter) {
             filtered = filtered.filter(product => 
                 product.sku.toLowerCase().includes(skuFilter.toLowerCase())
-            );
+            )
         }
         
         if (nameFilter) {
             filtered = filtered.filter(product => 
                 product.name.toLowerCase().includes(nameFilter.toLowerCase())
-            );
+            )
         }
         
-        return filtered.length;
-    };
+        return filtered.length
+    }
+
+    const columns = React.useMemo(() => getColumns(handleEdit), [])
 
     const table = useReactTable({
         data: filteredProducts, // Usar productos filtrados
-        columns: getColumns(handleEdit),
+        columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -764,7 +807,7 @@ export default function DataTableProductos({ products, branchs, user, onProductC
             columnVisibility,
             rowSelection,
         },
-    });
+    })
 
     return (
         <div className="w-full space-y-4">
@@ -784,8 +827,8 @@ export default function DataTableProductos({ products, branchs, user, onProductC
                         className="max-w-sm"
                     /> 
                     
-                    {/*  Select de Sucursales con formato (coincidencias/total) */}
-                    <Select value={selectedBranch.toString()} onValueChange={handleBranchChange} >
+                    {/* Select de Sucursales con formato (coincidencias/total) */}
+                    <Select value={selectedBranch.toString()} onValueChange={handleBranchChange}>
                         <SelectTrigger className="max-w-sm">
                             <SelectValue>
                                 <div className="flex items-center gap-2">
@@ -832,12 +875,13 @@ export default function DataTableProductos({ products, branchs, user, onProductC
                                                     <span className="text-xs text-blue-600">(Actual)</span>
                                                 )}
                                             </div>
+                                            {/* ✅ Usa las propiedades reales */}
                                             <span className="text-xs text-gray-500">
-                                                ({getFilteredProductCountByBranch(branch.id)}/{getTotalProductCountByBranch(branch.id)})
+                                                ({branch.products_with_stock}/{branch.total_products})
                                             </span>
                                         </div>
                                     </SelectItem>
-                                )) || <SelectItem value="0">No hay sucursales</SelectItem>}
+                                ))}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -917,6 +961,7 @@ export default function DataTableProductos({ products, branchs, user, onProductC
                     </Button>
                 </div>
             </div>
+            
             {editingProduct && (
                 <SheetProductEdit
                     product={editingProduct}
@@ -926,5 +971,5 @@ export default function DataTableProductos({ products, branchs, user, onProductC
                 />
             )}
         </div>
-    );
+    )
 }

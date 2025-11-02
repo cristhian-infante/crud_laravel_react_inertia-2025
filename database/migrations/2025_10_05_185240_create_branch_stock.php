@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('location_id')->constrained('warehouse_locations')->onDelete('cascade');
             $table->integer('stock')->default(0);
+            $table->integer('stock_min')->default(10); 
             $table->timestamps();
             
             $table->unique(['branch_id', 'product_id', 'location_id']);

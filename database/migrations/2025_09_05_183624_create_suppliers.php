@@ -12,15 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-            //Proveedores
             $table->id();
+            $table->enum('document_type', ['RUC', 'DNI', 'OTHER'])->default('RUC');
+            $table->string('document_number', 20)->nullable();
             $table->string('name');
+            $table->string('contact_person')->nullable(); // ✅ NUEVO
             $table->string('contact_email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();
+            
+            $table->index(['document_type', 'document_number']);
         });
     }
 

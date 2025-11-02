@@ -23,8 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');// index
     Route::get('/product/{sku}', [ProductController::class, 'show'])->name('product.show');//mostramos los detalles del producto
-    // Otras rutas que requieran autenticación...
+    
 });
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -10,8 +10,8 @@ interface ProductDetail {
     category_id: number;
     sku: string;
     codBarras: string;
-    nombre: string;
-    descripcion: string;
+    name: string;
+    description: string;
     marca: string;
     stockMin: number;
     ubicacion: string;
@@ -44,7 +44,7 @@ export default function DetailsProduct() {
             href: producturl.index().url,
         },
         {
-            title: product?.nombre || 'Detalle del Producto',
+            title: product?.name || 'Detalle del Producto',
             href: '#',
         },
     ];
@@ -65,7 +65,7 @@ export default function DetailsProduct() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Detalle - ${product.nombre}`} />
+            <Head title={`Detalle - ${product.name}`} />
             
             <div className="container mx-auto p-6">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -73,8 +73,8 @@ export default function DetailsProduct() {
                         {/* Columna izquierda - Imagen */}
                         <div>
                             <img 
-                                src={product.imagen || '/images/placeholder.jpg'} 
-                                alt={product.nombre}
+                                src={product.imagen || '/images/products/placeholder.jpg'} 
+                                alt={product.name}
                                 className="w-full h-80 object-cover rounded-lg"
                             />
                         </div>
@@ -83,7 +83,7 @@ export default function DetailsProduct() {
                         <div className="space-y-6">
                             {/* Información básica */}
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{product.nombre}</h1>
+                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{product.name}</h1>
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">
                                         {product.marca}
@@ -179,7 +179,7 @@ export default function DetailsProduct() {
                     <div className="border-t border-gray-200 dark:border-gray-700 p-6">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Descripción del Producto</h2>
                         <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                            {product.descripcion || 'No hay descripción disponible para este producto.'}
+                            {product.description || 'No hay descripción disponible para este producto.'}
                         </p>
                     </div>
 

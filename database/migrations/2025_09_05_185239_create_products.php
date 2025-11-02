@@ -18,10 +18,12 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained('brands');
             $table->foreignId('supplier_id')->constrained('suppliers');
             $table->string('sku')->unique();
+            $table->string('barcode')->nullable()->unique(); // ✅ NUEVO
             $table->text('description')->nullable();
             $table->string('name');
-            $table->integer('stock_min');
-            $table->integer('stock_total')->default(0);
+            $table->string('model')->nullable(); // ✅ NUEVO: Modelo del repuesto
+            $table->string('year')->nullable(); // ✅ NUEVO: Año de aplicación
+            $table->text('compatibility')->nullable(); // ✅ NUEVO: Vehículos compatibles
             $table->decimal('cost', 10, 2);
             $table->decimal('price', 10, 2);
             $table->string('image')->nullable();
@@ -29,8 +31,10 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index('sku');
+            $table->index('barcode'); // ✅ NUEVO índice
             $table->index('status');
             $table->index(['category_id', 'brand_id']);
+            $table->index('model'); // ✅ NUEVO índice para búsquedas
         });
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ProductService;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -14,27 +15,34 @@ class ProductController extends Controller
 
     //Index
     public function index()
-        {
-            return inertia('Product/Index', [
-                'products' => $this->productService->getAllProductsP(), //productos
-                'branchs' => $this->productService->getAllBranches(),  //marcas
-                'categoriesBD' => $this->productService->getAllCategories(),
-                'supplierDB' => $this->productService->getAllSupliers(),
-                'auth' => [ 
-                    'user' => [
-                        'id' => auth()->id(),
-                        'name' => auth()->user()->name,
-                        'email' => auth()->user()->email,
-                        'branch_id' => auth()->user()->branch_id,
-                    ]
-                ]
-            ]);
-        }
+    {
+        // Obtención de datos usando el Service Layer
+        $branchId = auth()->user()->branch_id;
+        $products = $this->productService->getAllProductsP($branchId);
+        $branches = $this->productService->getAllBranches(); // Renombrado a branches/sucursales
+        $categories = $this->productService->getAllCategories(); // Renombrado a categories
+        $suppliers = $this->productService->getAllSupliers(); // Renombrado a suppliers
+
+        // Preparamos los datos para Inertia
+        return inertia('Product/Index', [
+            'products' => $products,
+            'branchs' => $branches, // O 'marcas' si ese es el significado real
+            'categoriesBD' => $categories, // Clave más limpia
+            'supplierDB' => $suppliers, // Clave más limpia
+            'auth' => [
+                'user' => auth()->user() // Práctica común: pasar el objeto User completo
+            ]
+        ]);
+    }
+
     //detalle del producto 
     public function show(Request $request, $sku)
     {
+        $detailProduct = $this->productService->getProductDetail($sku);
+        dd($detailProduct); 
+        
         return inertia('Product/components/DetailsProduct', [
-            'detailProduct' => $this->productService->getProductDetail($sku)
+            'detailProduct' => $detailProduct
         ]);        
-    }
+    }  
 }
