@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BrandController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -23,7 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');// index
     Route::get('/product/{sku}', [ProductController::class, 'show'])->name('product.show');//mostramos los detalles del producto
-    
+    //brands-Marcas
+    Route::get('/brands',[BrandController::class, 'index'])->name('brands.index');
 });
 
 

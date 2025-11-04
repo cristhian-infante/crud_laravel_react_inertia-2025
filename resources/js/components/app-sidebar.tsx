@@ -24,6 +24,7 @@ import AppLogo from './app-logo';
 import { type NavItem } from '@/types';
 import category from '@/routes/category';
 import product from "@/routes/product"
+import brands from "@/routes/brands"
 //Menú
 
 const mainNavItems: NavItem[] = [
@@ -37,6 +38,11 @@ const Categorias: NavItem[] =[
     {
         title: 'Categorias',
         href: category.index().url,
+        icon: ChartColumnStacked,
+    },
+    {
+        title: 'Marcas',
+        href: brands.index().url,
         icon: ChartColumnStacked,
     },
     {
