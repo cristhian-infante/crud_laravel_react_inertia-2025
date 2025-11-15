@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('brands', function (Blueprint $table) {
             //Marcas
             $table->id();
+            $table->string('logo');
             $table->string('name');
             $table->boolean('status')->default(true);
             $table->timestamps();

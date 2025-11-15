@@ -1,7 +1,8 @@
 export interface Brand {
     id: number;
+    logo:string;
     name: string;
-    status: string;
+    status: boolean;
 }
 
 export interface DataTableBrandProps {

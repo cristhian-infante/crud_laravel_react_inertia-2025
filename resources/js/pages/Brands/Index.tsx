@@ -17,8 +17,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Brand{
     id: number
+    logo: string
     name: string
-    status: string
+    status: boolean
 }
 
 interface PageProps{

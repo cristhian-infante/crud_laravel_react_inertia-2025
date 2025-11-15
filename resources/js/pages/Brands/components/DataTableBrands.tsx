@@ -13,7 +13,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, Search } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -34,12 +34,12 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-//import { BulkActions, ActionsCell, MobileBrandCard, StatusBadge } from './DataTableBrands';
-import { BulkActions } from './DataTableBrands/BulkActions';
 import { ActionsCell } from './DataTableBrands/ActionsCell';
+import { BulkActions } from './DataTableBrands/BulkActions';
 import { MobileBrandCard } from './DataTableBrands/MobileBrandCard';
 import { StatusBadge } from './DataTableBrands/StatusBadge';
-import { DataTableBrandProps, Brand } from './DataTableBrands/types';
+import { Brand, DataTableBrandProps } from './DataTableBrands/types';
+import ModalDetallesBrand from './ModalDetallesBrand';
 
 export default function DataTableBrands({
     brands,
@@ -51,10 +51,22 @@ export default function DataTableBrands({
     const [rowSelection, setRowSelection] = React.useState({});
     const [data, setData] = React.useState<Brand[]>(brands);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [selectedBrand, setSelectedBrand] = React.useState<Brand | null>(null);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = React.useState(false);
 
     React.useEffect(() => {
         setData(brands);
     }, [brands]);
+
+    const handleShowDetails = (brand: Brand) => {
+        setSelectedBrand(brand);
+        setIsDetailsModalOpen(true);
+    };
+
+    const handleCloseDetailsModal = () => {
+        setIsDetailsModalOpen(false);
+        setSelectedBrand(null);
+    };
 
     const handleDeleteBrandOptimistic = async (
         id: number,
@@ -120,7 +132,8 @@ export default function DataTableBrands({
                     <Checkbox
                         checked={
                             table.getIsAllPageRowsSelected() ||
-                            (table.getIsSomePageRowsSelected() && 'indeterminate')
+                            (table.getIsSomePageRowsSelected() &&
+                                'indeterminate')
                         }
                         onCheckedChange={(value) =>
                             table.toggleAllPageRowsSelected(!!value)
@@ -141,17 +154,53 @@ export default function DataTableBrands({
             {
                 accessorKey: 'name',
                 header: ({ column }) => (
+                    <Button variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Marca
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                ),
+                cell: ({ row }) => {
+                    const logo = row.original.logo;
+                    const name = row.getValue('name');
+                    const brand = row.original; // Esta es la marca individual
+                    
+                    return (
+                        <div 
+                            className="flex items-center gap-2 cursor-pointer"
+                            onClick={() => handleShowDetails(brand)} // CORRECCIÓN: pasar brand, no brands
+                        >
+                            {logo ? (
+                                <img src={logo} alt={name} className="h-6 w-6 object-cover rounded"/>
+                            ) : (
+                                <div className="h-6 w-6 bg-gray-100 rounded flex items-center justify-center border">
+                                    <img src="/storage/image/brand/brand.png" alt={name} className="h-6 w-6 object-cover rounded"/>
+                                </div>
+                            )}
+                            <span className="hover:text-blue-500 transition-colors duration-150">
+                                {name}
+                            </span>
+                        </div>
+                    );
+                },
+            },
+            {
+                accessorKey: 'created_at',
+                header: ({ column }) => (
                     <Button
                         variant="ghost"
                         onClick={() =>
                             column.toggleSorting(column.getIsSorted() === 'asc')
                         }
                     >
-                        Nombre Marca
+                        Fecha Creación
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 ),
-                cell: ({ row }) => <div>{row.getValue('name')}</div>,
+                cell: ({ row }) => <div>{row.getValue('created_at')}</div>,
             },
             {
                 accessorKey: 'status',
@@ -211,29 +260,25 @@ export default function DataTableBrands({
             />
 
             <div className="flex flex-col items-start gap-4 py-4 sm:flex-row sm:items-center">
-                <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                    <Input
-                        placeholder="Filtrar por nombre..."
-                        value={
-                            (table.getColumn('name')?.getFilterValue() as string) ?? ''
-                        }
-                        onChange={(event) =>
-                            table.getColumn('name')?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm"
-                        disabled={isLoading}
-                    />
-                    <Input
-                        placeholder="Filtrar por estado..."
-                        value={
-                            (table.getColumn('status')?.getFilterValue() as string) ?? ''
-                        }
-                        onChange={(event) =>
-                            table.getColumn('status')?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm"
-                        disabled={isLoading}
-                    />
+                <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+                    <div className="relative flex items-center">
+                        <Search className="absolute left-3 h-4 w-4 text-gray-500" />
+                        <Input
+                            placeholder="Buscar"
+                            value={
+                                (table
+                                    .getColumn('name')
+                                    ?.getFilterValue() as string) ?? ''
+                            }
+                            onChange={(event) =>
+                                table
+                                    .getColumn('name')
+                                    ?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm pl-10"
+                            disabled={isLoading}
+                        />
+                    </div>
                 </div>
 
                 <DropdownMenu>
@@ -259,11 +304,10 @@ export default function DataTableBrands({
                                         column.toggleVisibility(!!value)
                                     }
                                 >
-                                    {column.id === 'name'
-                                        ? 'Nombre'
-                                        : column.id === 'status'
-                                          ? 'Estado'
-                                          : column.id}
+                                    { column.id === 'name' ? 'Nombre'
+                                    : column.id === 'created_at' ? 'Creación'
+                                    : column.id === 'status' ? 'Estado'
+                                    : column.id}
                                 </DropdownMenuCheckboxItem>
                             ))}
                     </DropdownMenuContent>
@@ -285,7 +329,8 @@ export default function DataTableBrands({
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                          header.column.columnDef.header,
+                                                          header.column
+                                                              .columnDef.header,
                                                           header.getContext(),
                                                       )}
                                             </TableHead>
@@ -298,19 +343,25 @@ export default function DataTableBrands({
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            data-state={row.getIsSelected() && 'selected'}
+                                            data-state={
+                                                row.getIsSelected() &&
+                                                'selected'
+                                            }
                                         >
-                                            {row.getVisibleCells().map((cell) => (
-                                                <TableCell
-                                                    key={cell.id}
-                                                    className="whitespace-nowrap"
-                                                >
-                                                    {flexRender(
-                                                        cell.column.columnDef.cell,
-                                                        cell.getContext(),
-                                                    )}
-                                                </TableCell>
-                                            ))}
+                                            {row
+                                                .getVisibleCells()
+                                                .map((cell) => (
+                                                    <TableCell
+                                                        key={cell.id}
+                                                        className="whitespace-nowrap"
+                                                    >
+                                                        {flexRender(
+                                                            cell.column
+                                                                .columnDef.cell,
+                                                            cell.getContext(),
+                                                        )}
+                                                    </TableCell>
+                                                ))}
                                         </TableRow>
                                     ))
                                 ) : (
@@ -339,6 +390,7 @@ export default function DataTableBrands({
                                     key={brand.id}
                                     brand={brand}
                                     onDelete={handleDeleteBrandOptimistic}
+                                    onShowDetails={handleShowDetails} // Agregar esta prop
                                 />
                             );
                         })}
@@ -378,6 +430,12 @@ export default function DataTableBrands({
                     </Button>
                 </div>
             </div>
+
+            <ModalDetallesBrand
+                brand={selectedBrand}
+                isOpen={isDetailsModalOpen}
+                onOpenChange={handleCloseDetailsModal}
+            />
         </div>
     );
 }
