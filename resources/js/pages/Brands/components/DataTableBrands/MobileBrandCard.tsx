@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Edit, Trash2, EyeOff, MoreVertical } from 'lucide-react';
+import { Edit, Trash2, EyeOff, MoreVertical, Calendar, Image } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +24,7 @@ import { StatusBadge } from './StatusBadge';
 import ModalEditar from '../ModalEditar';
 import { MobileBrandCardProps } from './types';
 
-export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
+export const MobileBrandCard = ({ brand, onDelete, onShowDetails }: MobileBrandCardProps) => {
     // Estados para controlar modales y diálogos
     const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
@@ -57,19 +57,56 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
     };
 
     return (
-        <div className="rounded-xl border bg-card p-4 shadow-sm transition-all hover:shadow-md">
+        <div 
+            className="rounded-xl border bg-card p-4 shadow-sm transition-all hover:shadow-md cursor-pointer"
+            onClick={() => onShowDetails && onShowDetails(brand)}
+        >
             {/* Header con información de la marca */}
             <div className="flex items-start justify-between">
-                <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-semibold text-card-foreground">
-                            {brand.name}
-                        </h3>
-                        <StatusBadge status={brand.status} />
+                <div className="flex-1 space-y-3">
+                    {/* Logo y nombre */}
+                    <div className="flex items-center gap-3">
+                        {brand.logo ? (
+                            <img 
+                                src={brand.logo} 
+                                alt={brand.name}
+                                className="h-12 w-12 object-cover rounded-lg border"
+                            />
+                        ) : (
+                            <div className="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center border">
+                                <img src="/storage/image/brand/brand.png" className="h-6 w-6 text-gray-400" />
+                            </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-semibold text-card-foreground truncate">
+                                {brand.name}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-1">
+                                <StatusBadge status={brand.status} />                                
+                            </div>
+                        </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                        ID: {brand.id}
-                    </p>
+
+                    {/* Información adicional */}
+                    <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                        {/* Fecha de creación */}
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Calendar className="h-4 w-4" />
+                            <div>
+                                <div className="font-medium text-xs text-gray-500">Creado</div>
+                                <div>{brand.created_at}</div>
+                            </div>
+                        </div>
+
+                        {/* Fecha de actualización */}
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Calendar className="h-4 w-4" />
+                            <div>
+                                <div className="font-medium text-xs text-gray-500">Actualizado</div>
+                                <div>{brand.updated_at}</div>
+                            </div>
+                        </div>
+                    </div>                   
                 </div>
                 
                 {/* Menú de acciones desplegable */}
@@ -78,8 +115,9 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 ml-2"
                             disabled={isDeleting || isDisabling}
+                            onClick={(e) => e.stopPropagation()} // Evitar que se propague el click al card
                         >
                             <MoreVertical className="h-4 w-4" />
                             <span className="sr-only">Abrir menú</span>
@@ -88,7 +126,10 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                     <DropdownMenuContent align="end" className="w-48">
                         {/* Opción: Editar */}
                         <DropdownMenuItem
-                            onClick={() => setIsEditModalOpen(true)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsEditModalOpen(true);
+                            }}
                             disabled={isDeleting || isDisabling}
                             className="flex items-center gap-2"
                         >
@@ -100,7 +141,10 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
 
                         {/* Opción: Inhabilitar */}
                         <DropdownMenuItem
-                            onClick={() => setIsDisableDialogOpen(true)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDisableDialogOpen(true);
+                            }}
                             disabled={isDeleting || isDisabling || brand.status === 'inactive'}
                             className="flex items-center gap-2 text-amber-600 focus:text-amber-600 focus:bg-amber-50"
                         >
@@ -110,7 +154,10 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
 
                         {/* Opción: Eliminar */}
                         <DropdownMenuItem
-                            onClick={() => setIsDeleteDialogOpen(true)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDeleteDialogOpen(true);
+                            }}
                             disabled={isDeleting || isDisabling}
                             className="flex items-center gap-2 text-red-600 focus:text-red-600 focus:bg-red-50"
                         >
@@ -137,9 +184,6 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                 open={isDisableDialogOpen}
                 onOpenChange={setIsDisableDialogOpen}
             >
-                <AlertDialogTrigger asChild>
-                    {/* El trigger está en el DropdownMenu */}
-                </AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle className="flex items-center gap-2">
@@ -160,7 +204,10 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                             Cancelar
                         </AlertDialogCancel>
                         <AlertDialogAction
-                            onClick={handleDisable}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDisable();
+                            }}
                             className="bg-amber-600 hover:bg-amber-700 focus:ring-amber-600"
                             disabled={isDisabling}
                         >
@@ -184,9 +231,6 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                 open={isDeleteDialogOpen}
                 onOpenChange={setIsDeleteDialogOpen}
             >
-                <AlertDialogTrigger asChild>
-                    {/* El trigger está en el DropdownMenu */}
-                </AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle className="flex items-center gap-2">
@@ -207,7 +251,10 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                             Cancelar
                         </AlertDialogCancel>
                         <AlertDialogAction
-                            onClick={handleDelete}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete();
+                            }}
                             className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
                             disabled={isDeleting}
                         >
@@ -229,6 +276,10 @@ export const MobileBrandCard = ({ brand, onDelete }: MobileBrandCardProps) => {
                 brand={brand}
                 isOpen={isEditModalOpen}
                 onOpenChange={setIsEditModalOpen}
+                onSuccess={() => {
+                    // Recargar datos o actualizar estado si es necesario
+                    console.log('Marca editada exitosamente');
+                }}
             />
         </div>
     );
